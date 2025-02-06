@@ -16,8 +16,9 @@ contract OnlyRoastNFT is ERC721, ERC721URIStorage, Ownable, ReentrancyGuard {
     mapping(uint256 => uint256) private _dropCounts;
 
     // Events for The Graph
-    event LitAdded(address indexed user, uint256 indexed tokenId, uint256 newLitCount);
-    event DropAdded(address indexed user, uint256 indexed tokenId, uint256 newDropCount);
+    event TokenMinted(address indexed to, uint256 tokenId, string uri);
+    event LitAdded(address indexed user, uint256 indexed tokenId, uint256 newLitCount, uint256 timestamp);
+    event DropAdded(address indexed user, uint256 indexed tokenId, uint256 newDropCount, uint256 timestamp);
 
     constructor()
         ERC721("OnlyRoasts", "OR")
@@ -32,18 +33,20 @@ contract OnlyRoastNFT is ERC721, ERC721URIStorage, Ownable, ReentrancyGuard {
         uint256 tokenId = _nextTokenId++;
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
+
+        emit TokenMinted(to, tokenId, uri);
     }
 
     // Add Lit count (like) securely
     function litToken(uint256 tokenId) public nonReentrant {
         _litCounts[tokenId]++;
-        emit LitAdded(msg.sender, tokenId, _litCounts[tokenId]);
+        emit LitAdded(msg.sender, tokenId, _litCounts[tokenId], block.timestamp);
     }
 
     // Add Drop count (dislike) securely
     function dropToken(uint256 tokenId) public nonReentrant {
         _dropCounts[tokenId]++;
-        emit DropAdded(msg.sender, tokenId, _dropCounts[tokenId]);
+        emit DropAdded(msg.sender, tokenId, _dropCounts[tokenId], block.timestamp);
     }
 
     // The following functions are overrides required by Solidity.
