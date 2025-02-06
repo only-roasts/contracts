@@ -26,11 +26,12 @@ contract OnlyRoastNFT is ERC721, ERC721URIStorage, Ownable, ReentrancyGuard {
     {}
 
     function _baseURI() internal pure override returns (string memory) {
-        return "";
+        return "https://white-official-scallop-559.mypinata.cloud/ipfs/";
     }
 
-    function safeMint(address to, string memory uri) public {
+    function safeMint(address to, string memory cid) public {
         uint256 tokenId = _nextTokenId++;
+        string memory uri = string.concat(_baseURI(), cid);
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
 
@@ -47,6 +48,12 @@ contract OnlyRoastNFT is ERC721, ERC721URIStorage, Ownable, ReentrancyGuard {
     function dropToken(uint256 tokenId) public nonReentrant {
         _dropCounts[tokenId]++;
         emit DropAdded(msg.sender, tokenId, _dropCounts[tokenId], block.timestamp);
+    }
+
+    function updateMetaDataURI(uint256 tokenId, string memory cid) public {
+        string memory uri = string.concat(_baseURI(), cid);
+
+        _setTokenURI(tokenId, uri);
     }
 
     // The following functions are overrides required by Solidity.
