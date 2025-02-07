@@ -50,9 +50,18 @@ contract OnlyRoastNFT is ERC721, ERC721URIStorage, Ownable, ReentrancyGuard {
         emit DropAdded(msg.sender, tokenId, _dropCounts[tokenId], block.timestamp);
     }
 
+    // Getters for Lit and Drop counts
+    function getLitCount(uint256 tokenId) public view returns (uint256) {
+        return _litCounts[tokenId];
+    }
+
+    function getDropCount(uint256 tokenId) public view returns (uint256) {
+        return _dropCounts[tokenId];
+    }
+
+    // Update metadata URI
     function updateMetaDataURI(uint256 tokenId, string memory cid) public {
         string memory uri = string.concat(_baseURI(), cid);
-
         _setTokenURI(tokenId, uri);
     }
 
